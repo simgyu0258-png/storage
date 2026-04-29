@@ -17,7 +17,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between">
           <div>
             <Link href="/dashboard" className="text-lg font-bold text-slate-900">
-              창고 물품 관리 MVP
+              창고 관리 시스템
             </Link>
             <p className="text-xs text-slate-500">
               {session.user.name} ({roleLabel(session.user.role)}) | {session.user.departmentName}
@@ -25,11 +25,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
           <div className="flex flex-wrap items-center gap-1">
             <NavLink href="/dashboard" label="대시보드" />
-            <NavLink href="/inventory" label="재고" />
-            <NavLink href="/transactions/new" label="빠른 입출고" />
-            <NavLink href="/transactions" label="이력" />
-            <NavLink href="/items" label="품목" />
-            <NavLink href="/warehouses" label="창고" />
+            <NavLink href="/inventory" label="재고 조회" />
+            <NavLink href="/transactions/new" label="입출고 등록" />
+            <NavLink href="/transactions" label="이력 조회" />
+            <NavLink href="/items" label="품목 관리" />
+            <NavLink href="/warehouses" label="창고 관리" />
             {session.user.role === "SYSTEM_ADMIN" && <NavLink href="/admin/users" label="사용자관리" />}
             <SignOutButton />
           </div>
