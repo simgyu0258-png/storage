@@ -1,7 +1,7 @@
 ﻿import { prisma } from "@/lib/prisma";
 import { getAccessibleWarehouseIds } from "@/lib/permissions";
 import { requireUser } from "@/lib/session";
-import { itemTypeLabel } from "@/lib/format";
+
 
 export default async function InventoryPage({
   searchParams,
@@ -38,7 +38,7 @@ export default async function InventoryPage({
       },
       include: {
         warehouse: true,
-        item: { include: { category: true, defaultLocation: true } },
+        item: true,
       },
       orderBy: [{ warehouse: { name: "asc" } }, { item: { name: "asc" } }],
     }),
@@ -70,11 +70,7 @@ export default async function InventoryPage({
                 <th>창고</th>
                 <th>품목 코드</th>
                 <th>품목명</th>
-                <th>유형</th>
-                <th>카테고리</th>
                 <th>현재 수량</th>
-                <th>단위</th>
-                <th>기본 위치</th>
               </tr>
             </thead>
             <tbody>
@@ -83,11 +79,7 @@ export default async function InventoryPage({
                   <td>{row.warehouse.name}</td>
                   <td>{row.item.itemCode}</td>
                   <td>{row.item.name}</td>
-                  <td>{itemTypeLabel(row.item.type)}</td>
-                  <td>{row.item.category?.name || "-"}</td>
                   <td>{row.quantity}</td>
-                  <td>{row.item.unit}</td>
-                  <td>{row.item.defaultLocation?.name || "-"}</td>
                 </tr>
               ))}
             </tbody>
