@@ -243,6 +243,52 @@ formatDateTime(date)        // "2024. 01. 15. 09:30" (ko-KR)
 
 ---
 
+## Vercel 배포 가이드
+
+### DB: Neon (PostgreSQL) 설정
+
+1. [neon.tech](https://neon.tech) 가입 → 프로젝트 생성
+2. Connection string 복사 (postgresql://…)
+3. 로컬 `.env`의 `DATABASE_URL`을 해당 값으로 교체
+
+### 최초 마이그레이션 생성 (로컬, 1회)
+
+```bash
+npm run db:migrate   # 이름 입력: init
+npm run db:seed      # 샘플 데이터 투입
+git add prisma/migrations
+git commit -m "chore: add initial prisma migration"
+```
+
+### GitHub → Vercel 연결
+
+1. GitHub에 repo 생성 후 push
+2. [vercel.com](https://vercel.com) → Import Project → GitHub repo 선택
+3. Vercel 환경변수 설정 (Settings → Environment Variables):
+   - `DATABASE_URL` — Neon production connection string
+   - `NEXTAUTH_SECRET` — `openssl rand -base64 32` 결과값
+   - `NEXTAUTH_URL` — `https://your-app.vercel.app`
+
+### 빌드 흐름 (자동)
+
+Vercel이 `npm run build`를 실행하면:
+1. `prisma generate` — Prisma 클라이언트 생성
+2. `prisma migrate deploy` — 커밋된 migration을 DB에 적용
+3. `next build` — Next.js 빌드
+
+> `db:seed`는 배포 시 자동 실행되지 않습니다. 초기 데이터가 필요하면 로컬에서 수동 실행하거나 별도 스크립트로 처리하세요.
+
+### 스키마 변경 시 워크플로
+
+```bash
+# 1. schema.prisma 수정
+# 2. 로컬에서 migration 생성
+npm run db:migrate   # migration 파일 자동 생성
+# 3. migration 파일 커밋 후 push → Vercel이 자동 적용
+```
+
+---
+
 ## 스키마 변경 시 주의사항
 
 1. `prisma/schema.prisma` 수정
