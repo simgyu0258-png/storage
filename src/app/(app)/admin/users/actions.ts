@@ -20,6 +20,20 @@ export async function createDepartment(formData: FormData) {
   redirect("/admin/users");
 }
 
+export async function updateDepartment(formData: FormData) {
+  const user = await requireUser();
+  if (!canManageMaster(user.role)) throw new Error("권한이 없습니다.");
+
+  const id = String(formData.get("id") || "").trim();
+  const name = String(formData.get("name") || "").trim();
+  const isActive = formData.get("isActive") === "on";
+
+  if (!name) throw new Error("부서명을 입력해 주세요.");
+
+  await prisma.department.update({ where: { id }, data: { name, isActive } });
+  revalidatePath("/admin/users");
+}
+
 export async function createUser(formData: FormData) {
   const user = await requireUser();
   if (!canManageMaster(user.role)) throw new Error("권한이 없습니다.");

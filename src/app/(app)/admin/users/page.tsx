@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { canManageMaster } from "@/lib/permissions";
 import { roleLabel } from "@/lib/format";
 import { requireUser } from "@/lib/session";
-import { createDepartment, createUser, toggleUserActive } from "./actions";
+import { createDepartment, createUser, toggleUserActive, updateDepartment } from "./actions";
 
 export default async function AdminUsersPage() {
   const user = await requireUser();
@@ -27,6 +27,30 @@ export default async function AdminUsersPage() {
           <input name="name" placeholder="부서명" className="w-full rounded-md border border-slate-300 px-3 py-2" required />
           <button className="rounded-md border border-slate-300 px-3 py-2 hover:bg-slate-50">추가</button>
         </form>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h2 className="mb-2 font-semibold">부서 목록</h2>
+        <div className="space-y-2">
+          {departments.map((dept) => (
+            <form key={dept.id} action={updateDepartment} className="flex items-center gap-2">
+              <input type="hidden" name="id" value={dept.id} />
+              <input
+                name="name"
+                defaultValue={dept.name}
+                className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+                required
+              />
+              <label className="flex items-center gap-1 text-sm text-slate-600">
+                <input type="checkbox" name="isActive" defaultChecked={dept.isActive} />
+                사용
+              </label>
+              <button className="rounded-md border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">
+                저장
+              </button>
+            </form>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-xl border border-slate-200 bg-white p-4">
