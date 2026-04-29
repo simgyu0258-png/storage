@@ -1,0 +1,161 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SYSTEM_ADMIN
+  DEPT_ADMIN
+  USER
+}
+
+enum ItemType {
+  CONSUMABLE
+  EQUIPMENT
+}
+
+enum TransactionType {
+  IN
+  OUT
+  ADJUST
+}
+
+model Department {
+  id          String                      @id @default(cuid())
+  name        String                      @unique
+  isActive    Boolean                     @default(true)
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+  users       User[]
+  accesses    WarehouseDepartmentAccess[]
+  transactions StockTransaction[]
+}
+
+model User {
+  id           String             @id @default(cuid())
+  email        String             @unique
+  name         String
+  passwordHash String
+  role         UserRole           @default(USER)
+  isActive     Boolean            @default(true)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  lastLoginAt  DateTime?
+  departmentId String
+  department   Department         @relation(fields: [departmentId], references: [id])
+  transactions StockTransaction[]
+}
+
+model Warehouse {
+  id           String                      @id @default(cuid())
+  code         String                      @unique
+  name         String
+  description  String?
+  isActive     Boolean                     @default(true)
+  createdAt    DateTime                    @default(now())
+  updatedAt    DateTime                    @updatedAt
+  accesses     WarehouseDepartmentAccess[]
+  locations    Location[]
+  inventories  Inventory[]
+  transactions StockTransaction[]
+}
+
+model WarehouseDepartmentAccess {
+  id           String     @id @default(cuid())
+  warehouseId  String
+  departmentId String
+  warehouse    Warehouse  @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([warehouseId, departmentId])
+}
+
+model ItemCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     Item[]
+}
+
+model Location {
+  id          String    @id @default(cuid())
+  warehouseId String
+  name        String
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  items       Item[]
+
+  @@unique([warehouseId, name])
+}
+
+model Item {
+  id                String     @id @default(cuid())
+  itemCode          String     @unique
+  type              ItemType
+  name              String
+  categoryId        String?
+  category          ItemCategory? @relation(fields: [categoryId], references: [id])
+  specification     String?
+  unit              String
+  minStock          Int        @default(0)
+  defaultLocationId String?
+  defaultLocation   Location?  @relation(fields: [defaultLocationId], references: [id])
+  searchKeywords    String?
+  isActive          Boolean    @default(true)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  inventories       Inventory[]
+  transactions      StockTransaction[]
+
+  @@index([name])
+  @@unique([name, specification, unit])
+}
+
+model Inventory {
+  id          String    @id @default(cuid())
+  warehouseId String
+  itemId      String
+  quantity    Int       @default(0)
+  updatedAt   DateTime  @updatedAt
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  item        Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([warehouseId, itemId])
+  @@index([quantity])
+}
+
+model StockTransaction {
+  id            String          @id @default(cuid())
+  type          TransactionType
+  warehouseId   String
+  itemId        String
+  actorName     String
+  quantity      Int
+  beforeQty     Int
+  afterQty      Int
+  reason        String?
+  note          String?
+  createdAt     DateTime        @default(now())
+  warehouse     Warehouse       @relation(fields: [warehouseId], references: [id])
+  item          Item            @relation(fields: [itemId], references: [id])
+  departmentId  String
+  department    Department      @relation(fields: [departmentId], references: [id])
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([type])
+  @@index([warehouseId])
+  @@index([itemId])
+  @@index([departmentId])
+}
+
+

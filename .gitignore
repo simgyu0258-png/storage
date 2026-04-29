@@ -1,0 +1,20 @@
+﻿node_modules
+.next
+.env
+.env.local
+coverage
+npm-debug.log*
+
+# SQLite DB 파일
+prisma/*.db
+prisma/*.db-journal
+prisma/*.db-wal
+prisma/*.db-shm
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 빌드 산출물
+out/
+dist/
