@@ -71,7 +71,6 @@ export default async function ItemsPage({
             </select>
             <input name="specification" placeholder="규격(선택)" className="rounded-md border border-slate-300 px-3 py-2" />
             <input name="unit" placeholder="단위(예: 개, 박스)" className="rounded-md border border-slate-300 px-3 py-2" required />
-            <input name="minStock" type="number" defaultValue={0} className="rounded-md border border-slate-300 px-3 py-2" />
             <select name="defaultLocationId" className="rounded-md border border-slate-300 px-3 py-2" defaultValue="">
               <option value="">기본 보관 위치(선택)</option>
               {locations.map((loc) => (
@@ -97,7 +96,6 @@ export default async function ItemsPage({
                 <th>유형</th>
                 <th>카테고리</th>
                 <th>단위</th>
-                <th>최소 재고</th>
                 <th>기본 위치</th>
                 {isAdmin && <th>수정</th>}
               </tr>
@@ -110,7 +108,6 @@ export default async function ItemsPage({
                   <td>{itemTypeLabel(item.type)}</td>
                   <td>{item.category?.name || "-"}</td>
                   <td>{item.unit}</td>
-                  <td>{item.minStock}</td>
                   <td>{item.defaultLocation?.name || "-"}</td>
                   {isAdmin && (
                     <td>

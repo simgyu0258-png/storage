@@ -48,7 +48,6 @@ export default async function EditItemPage({ params }: { params: { id: string } 
           <input name="specification" defaultValue={item.specification || ""} placeholder="규격" className="rounded-md border border-slate-300 px-3 py-2" />
           <input name="unit" defaultValue={item.unit} className="rounded-md border border-slate-300 px-3 py-2" required />
 
-          <input name="minStock" type="number" defaultValue={item.minStock} className="rounded-md border border-slate-300 px-3 py-2" />
           <select name="defaultLocationId" className="rounded-md border border-slate-300 px-3 py-2" defaultValue={item.defaultLocationId || ""}>
             <option value="">기본 보관 위치(선택)</option>
             {locations.map((loc) => (

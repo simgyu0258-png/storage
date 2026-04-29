@@ -7,7 +7,7 @@ export const itemSchema = z.object({
   categoryId: z.string().optional(),
   specification: z.string().optional(),
   unit: z.string().min(1, "단위를 입력해 주세요."),
-  minStock: z.coerce.number().int().min(0, "최소 재고는 0 이상이어야 합니다."),
+  minStock: z.coerce.number().int().min(0).default(0),
   defaultLocationId: z.string().optional(),
   searchKeywords: z.string().optional(),
   isActive: z.coerce.boolean().default(true),

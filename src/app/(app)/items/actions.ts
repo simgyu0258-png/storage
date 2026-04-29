@@ -20,7 +20,7 @@ export async function createItem(formData: FormData) {
     categoryId: formData.get("categoryId") || undefined,
     specification: formData.get("specification") || undefined,
     unit: formData.get("unit"),
-    minStock: formData.get("minStock"),
+
     defaultLocationId: formData.get("defaultLocationId") || undefined,
     searchKeywords: formData.get("searchKeywords") || undefined,
     isActive: formData.get("isActive") === "on",
@@ -53,7 +53,7 @@ export async function updateItem(itemId: string, formData: FormData) {
     categoryId: formData.get("categoryId") || undefined,
     specification: formData.get("specification") || undefined,
     unit: formData.get("unit"),
-    minStock: formData.get("minStock"),
+
     defaultLocationId: formData.get("defaultLocationId") || undefined,
     searchKeywords: formData.get("searchKeywords") || undefined,
     isActive: formData.get("isActive") === "on",

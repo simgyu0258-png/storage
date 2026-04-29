@@ -52,7 +52,6 @@ export default async function WarehouseDetailPage({ params }: { params: { id: st
                 <th>품목명</th>
                 <th>현재 수량</th>
                 <th>단위</th>
-                <th>최소 재고</th>
               </tr>
             </thead>
             <tbody>
@@ -60,9 +59,8 @@ export default async function WarehouseDetailPage({ params }: { params: { id: st
                 <tr key={inv.id}>
                   <td>{inv.item.itemCode}</td>
                   <td>{inv.item.name}</td>
-                  <td className={inv.quantity <= inv.item.minStock ? "font-semibold text-rose-700" : ""}>{inv.quantity}</td>
+                  <td>{inv.quantity}</td>
                   <td>{inv.item.unit}</td>
-                  <td>{inv.item.minStock}</td>
                 </tr>
               ))}
             </tbody>
